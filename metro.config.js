@@ -16,9 +16,10 @@ const config = {
       '@app_store': `${__dirname}/src/store`,
       '@app_utils': `${__dirname}/src/utils`,
       '@styles': `${__dirname}/src/styles`,
-    }
+      '@api': `${__dirname}/src/api`,
+    },
   },
-  watchFolders: [__dirname]
+  watchFolders: [__dirname],
 };
 
 module.exports = mergeConfig(getDefaultConfig(__dirname), config);

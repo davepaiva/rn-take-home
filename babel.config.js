@@ -14,6 +14,7 @@ module.exports = {
           '@app_store': './src/store',
           '@app_utils': './src/utils',
           '@styles': './src/styles',
+          '@api': './src/api',
         },
       },
     ],
