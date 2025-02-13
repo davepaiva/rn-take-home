@@ -13,6 +13,7 @@ import Text from '@components/Text';
 import Button from '@components/Button';
 import Tag from '@components/Tag';
 import globalStyles from '@styles/globalStyles';
+import Screen from '@components/Screen';
 
 type Genre = {
   id: number;
@@ -32,39 +33,41 @@ const GENRES: Genre[] = [
 const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <ImageBackground
-        source={{ uri: renderTMDBImage(route.params.posterUrl, 500) }}
-        style={styles.posterImage}
-        resizeMode="cover"
-      >
-        <LinearGradient
-          colors={['transparent', '#000000']}
-          style={styles.gradient}
+    <Screen horizontalPadding={0} showNavbar title="Watch" transparentNavbar centerTitle={false}>
+      <ScrollView style={styles.container}>
+        <View style={styles.headerContainer}>
+          <ImageBackground
+          source={{ uri: renderTMDBImage(route.params.posterUrl, 500) }}
+          style={styles.posterImage}
+          resizeMode="cover"
         >
-          <View style={styles.heroContentContainer}>
-          <Button variant="primary" title="Get Tickets" onPress={() => {}} />
-          <Button variant="secondary" title="Watch Trailer" onPress={() => {}} leftIcon={'play'} />
-          </View>
-        </LinearGradient>
-      </ImageBackground>
-      </View>
-
-      <View style={styles.contentContainer}>
-        <Text style={styles.genresSection} variant="primary">Genres</Text>
-        <View style={styles.genresContainer}>
-          {GENRES.map((genre) => (
-              <Tag key={genre.id} label={genre.name} color={genre.color} />
-          ))}
+          <LinearGradient
+            colors={['transparent', '#000000']}
+            style={styles.gradient}
+          >
+            <View style={styles.heroContentContainer}>
+            <Button variant="primary" title="Get Tickets" onPress={() => {}} />
+            <Button variant="secondary" title="Watch Trailer" onPress={() => {}} leftIcon={'play'} />
+            </View>
+          </LinearGradient>
+        </ImageBackground>
         </View>
-        <View style={[styles.divider, globalStyles.divider]} />
-        <Text variant="primary">Overview</Text>
-        <Text style={styles.descriptionSection} variant='secondary'>
-            {route.params.description}
-        </Text>
-      </View>
-    </ScrollView>
+
+        <View style={styles.contentContainer}>
+          <Text style={styles.genresSection} variant="primary">Genres</Text>
+          <View style={styles.genresContainer}>
+            {GENRES.map((genre) => (
+                <Tag key={genre.id} label={genre.name} color={genre.color} />
+            ))}
+          </View>
+          <View style={[styles.divider, globalStyles.divider]} />
+          <Text variant="primary">Overview</Text>
+          <Text style={styles.descriptionSection} variant='secondary'>
+              {route.params.description}
+          </Text>
+        </View>
+      </ScrollView>
+    </Screen>
   );
 };
 

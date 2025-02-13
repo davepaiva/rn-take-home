@@ -1,6 +1,6 @@
 import palette from '@styles/palette';
 import React from 'react';
-import {Text as RNText, TextProps} from 'react-native';
+import {Text as RNText, StyleSheet, TextProps} from 'react-native';
 
 type TextVariant = 'primary' | 'secondary' | 'tertiary' | 'light';
 
@@ -56,11 +56,16 @@ const Text = ({children, style, variant = 'primary', size = 'medium', weight = '
 
 
   return (
-    <RNText style={[{color: getFontColor(variant), fontSize: getFontSize(size), fontFamily: getFontFamily(weight)}, style]} {...props}>
+    <RNText style={[{color: getFontColor(variant), fontSize: getFontSize(size), fontFamily: getFontFamily(weight)}, styles.text, style]} {...props}>
       {children}
     </RNText>
   );
 };
 
+const styles = StyleSheet.create({
+  text: {
+    lineHeight: 20,
+  },
+});
 
 export default Text;
