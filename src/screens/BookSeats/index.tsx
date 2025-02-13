@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef} from 'react';
 import { View, StyleSheet, Pressable, Image, ScrollView } from 'react-native';
 import Screen from '@components/Screen';
 import Text from '@components/Text';
@@ -8,7 +8,7 @@ import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-vi
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Button from '@components/Button';
 import SeatTag from './components/SeatTag';
-import globalStyles from '@styles/globalStyles';
+
 
 const screenImage = require('../../../assets/images/theatre_screen.png');
 
@@ -182,7 +182,7 @@ const BookSeatsScreen = () => {
               </ScrollView>
             </View>
           )}
-          <View style={styles.ctaContainer}>
+          <View style={[styles.ctaContainer]}>
             <View style={styles.priceContainer}>
               <Text variant="primary" weight="Medium" size="x_small">Total</Text>
               <Text variant="primary" weight="SemiBold" size="large">${calculateTotalPrice()}</Text>
@@ -282,7 +282,9 @@ const styles = StyleSheet.create({
     width: 29.13,
     height: 29.13,
     borderRadius: 20,
-    backgroundColor: palette.surface_primary,
+    borderWidth: 0.9,
+    borderColor: '#EFEFEF',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -293,7 +295,6 @@ const styles = StyleSheet.create({
   },
   selectedSeatsContainer: {
     marginTop: 16,
-    marginBottom: 35,
   },
   seatTags: {
     flexDirection: 'row',
@@ -305,6 +306,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 10,
+    marginTop: 'auto',
   },
   priceContainer: {
     flex: 1,
