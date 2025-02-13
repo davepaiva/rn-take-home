@@ -4,6 +4,10 @@ import Text from '@components/Text';
 import getNowPlayingMovies from '@api/getNowPlayingMovies';
 import MovieListItem from './components/MovieListItem';
 import { Movie } from '@custom_types/api/tmdb';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { MovieStackParamList } from '@navigators/MovieNavigator';
+
 
 const WatchScreen = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -11,6 +15,8 @@ const WatchScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMorePages, setHasMorePages] = useState(true);
+  const navigation = useNavigation<NativeStackNavigationProp<MovieStackParamList>>();
+
 
   const fetchMovies = async (page: number, isLoadingMore = false) => {
     try {
@@ -44,9 +50,6 @@ const WatchScreen = () => {
     }
   }, [isLoadingMore, hasMorePages, currentPage, isLoading]);
 
-  const handleMoviePress = (movie: Movie) => {
-    console.log('movie pressed:', movie);
-  };
 
   const renderFooter = () => {
     if (!isLoadingMore) return null;
@@ -57,14 +60,21 @@ const WatchScreen = () => {
     );
   };
 
-  const renderItem = ({ item }: { item: Movie }) => (
+  const renderItem = ({ item }: { item: Movie }) => {
+    const handleMoviePress = () => {
+        console.log('movie pressed:', item.title);
+        navigation.navigate('MovieDetails', { title: item.title, posterUrl: item.poster_path, description: item.overview });
+    }
+
+    return (
     <MovieListItem
       key={item.id}
       title={item.title}
       posterUrl={item.backdrop_path}
-      onPress={() => handleMoviePress(item)}
+      onPress={handleMoviePress}
     />
-  );
+    )
+  }
 
   if (isLoading) {
     return (

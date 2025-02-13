@@ -1,8 +1,17 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import { RootStackParamList } from '@custom_types/screens/rootstack';
-import rootStackScreens from '@custom_types/screens/rootstack';
 import HomeTabNavigator from '@navigators/HomeBottomTabBar';
+import MovieDetailsScreen from '@screens/MovieDetailsScreen';
+
+export type RootStackParamList = {
+  Home: undefined;
+  MovieDetails: {
+    title: string,
+    imageUrl: string,
+    description: string,
+}
+};
+
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -11,7 +20,8 @@ const RootStackNavigator = () => {
     <>
       <RootStack.Navigator
       >
-        <RootStack.Screen name={rootStackScreens.Home} component={HomeTabNavigator} options={{ headerShown: false }} />
+        <RootStack.Screen name={'Home'} component={HomeTabNavigator} options={{ headerShown: false }} />
+        <RootStack.Screen name={'MovieDetails'} component={MovieDetailsScreen} options={{ headerShown: false }} />
       </RootStack.Navigator>
     </>
   );

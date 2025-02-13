@@ -1,3 +1,4 @@
+import { renderTMDBImage } from '@app_utils/helperfuncs';
 import React from 'react';
 import { 
   ImageBackground,
@@ -15,10 +16,11 @@ interface MovieListItemProps {
 }
 
 const MovieListItem: React.FC<MovieListItemProps> = ({ title, posterUrl, onPress }) => {
+
   return (
     <Pressable onPress={onPress} style={styles.card}>
       <ImageBackground
-        source={{ uri: `https://image.tmdb.org/t/p/w500/${posterUrl}` }}
+        source={{ uri: renderTMDBImage(posterUrl, 500) }}
         style={styles.imageBackground}
         resizeMode="cover"
       >
