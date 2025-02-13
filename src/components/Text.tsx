@@ -4,7 +4,7 @@ import {Text as RNText, StyleSheet, TextProps} from 'react-native';
 
 type TextVariant = 'primary' | 'secondary' | 'tertiary' | 'light';
 
-type TextSize = 'small' | 'medium' | 'large' | 'x_large';
+type TextSize = 'x_small' | 'small' | 'medium' | 'large' | 'x_large';
 
 type TextWeight = 'Regular' | 'Medium' | 'SemiBold';
 
@@ -32,6 +32,8 @@ const Text = ({children, style, variant = 'primary', size = 'medium', weight = '
 
   const getFontSize = (size: TextSize) => {
     switch (size) {
+      case 'x_small':
+        return 10;
       case 'small':
         return 12;
       case 'medium':

@@ -1394,6 +1394,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@openspacelabs/react-native-zoomable-view@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@openspacelabs/react-native-zoomable-view/-/react-native-zoomable-view-2.3.1.tgz#7ce29ba9c85bf77cc7566fa4a9844316ebde9045"
+  integrity sha512-Oe+yNf+E0qCgob7O7SOnK0v0XFbWpQ2Qr+AthOM+MOAhEdL/FwHvHYX7ioVltIlT+pZu3AQfCyRXksqBsZ76nw==
+  dependencies:
+    prop-types "^15.7.2"
+
 "@react-native-community/cli-clean@15.0.1":
   version "15.0.1"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-clean/-/cli-clean-15.0.1.tgz#80ce09ffe0d62bb265447007f24dc8dcbf8fe7d3"

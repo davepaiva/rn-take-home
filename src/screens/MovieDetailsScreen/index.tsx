@@ -6,7 +6,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import { renderTMDBImage } from '@app_utils/helperfuncs';
-import { MovieDetailsProps } from '@navigators/MovieNavigator';
+import {RootStackParamList, MovieDetailsProps } from '@navigators/index';
 import palette from '@styles/palette';
 import LinearGradient from 'react-native-linear-gradient';
 import Text from '@components/Text';
@@ -14,6 +14,8 @@ import Button from '@components/Button';
 import Tag from '@components/Tag';
 import globalStyles from '@styles/globalStyles';
 import Screen from '@components/Screen';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type Genre = {
   id: number;
@@ -32,6 +34,12 @@ const GENRES: Genre[] = [
 
 const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
 
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const handleBookSeats = () => {
+    navigation.navigate('BookSeats');
+  };
+
   return (
     <Screen horizontalPadding={0} showNavbar title="Watch" transparentNavbar centerTitle={false}>
       <ScrollView style={styles.container}>
@@ -46,7 +54,7 @@ const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
             style={styles.gradient}
           >
             <View style={styles.heroContentContainer}>
-            <Button variant="primary" title="Get Tickets" onPress={() => {}} />
+            <Button variant="primary" title="Get Tickets" onPress={handleBookSeats} />
             <Button variant="secondary" title="Watch Trailer" onPress={() => {}} leftIcon={'play'} />
             </View>
           </LinearGradient>

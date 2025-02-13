@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Text from './Text';
 import Icon from 'react-native-vector-icons/Ionicons';
+import palette from '@styles/palette';
 
 interface ScreenProps {
   children: React.ReactNode;
@@ -65,8 +66,12 @@ const Screen: React.FC<ScreenProps> = ({
         </Text>
         {subtitle && (
           <Text
+            size="small"
+            weight="Medium"
+
             style={[
-              { color: transparentNavbar ? '#FFFFFF99' : '#00000099' },
+              {color: transparentNavbar ? '#FFFFFF99' : palette.primary},
+              styles.subtitle,
             ]}
           >
             {subtitle}
@@ -178,6 +183,9 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+  },
+  subtitle: {
+    marginTop: 6,
   },
 });
 

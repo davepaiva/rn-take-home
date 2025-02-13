@@ -6,7 +6,8 @@ import MovieListItem from './components/MovieListItem';
 import { Movie } from '@custom_types/api/tmdb';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MovieStackParamList } from '@navigators/MovieNavigator';
+import { RootStackParamList } from '@navigators/index';
+import Screen from '@components/Screen';
 
 
 const WatchScreen = () => {
@@ -15,7 +16,7 @@ const WatchScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMorePages, setHasMorePages] = useState(true);
-  const navigation = useNavigation<NativeStackNavigationProp<MovieStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
 
   const fetchMovies = async (page: number, isLoadingMore = false) => {
@@ -24,6 +25,7 @@ const WatchScreen = () => {
         setIsLoading(true);
       }
       const data = await getNowPlayingMovies(page);
+      console.log('data', data);
       if (isLoadingMore) {
         setMovies(prevMovies => [...prevMovies, ...data.results]);
       } else {
@@ -64,7 +66,7 @@ const WatchScreen = () => {
     const handleMoviePress = () => {
         console.log('movie pressed:', item.title);
         navigation.navigate('MovieDetails', { title: item.title, posterUrl: item.poster_path, description: item.overview });
-    }
+    };
 
     return (
     <MovieListItem
@@ -73,8 +75,8 @@ const WatchScreen = () => {
       posterUrl={item.backdrop_path}
       onPress={handleMoviePress}
     />
-    )
-  }
+    );
+  };
 
   if (isLoading) {
     return (
@@ -85,21 +87,19 @@ const WatchScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
-      {movies.length > 0 ? (
-        <FlatList
-          data={movies}
-          renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={renderFooter}
-          contentContainerStyle={styles.listContainer}
-        />
-      ) : (
-        <Text>No movies available</Text>
-      )}
-    </View>
+    <Screen showNavbar title="Watch" showBackButton={false} centerTitle={false}>
+      <View style={styles.container}>
+          <FlatList
+            data={movies}
+            renderItem={renderItem}
+            keyExtractor={item => item.id.toString()}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderFooter}
+            ListEmptyComponent={<Text>No movies available</Text>}
+          />
+        </View>
+    </Screen>
   );
 };
 
@@ -108,9 +108,8 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     backgroundColor: 'white',
-  },
-  listContainer: {
-    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   footerLoader: {
     paddingVertical: 20,

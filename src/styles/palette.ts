@@ -10,6 +10,7 @@ const palette = {
     tag_purple: '#564CA3',
     tag_gold: '#CD9D0F',
     divider: '#000000',
-}
+    disabled: '#A6A6A6',
+};
 
 export default palette;
