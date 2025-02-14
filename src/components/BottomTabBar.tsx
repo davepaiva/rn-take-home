@@ -75,7 +75,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: '#2E2739',
-    borderRadius: 27,
+    borderTopLeftRadius: 27,
+    borderTopRightRadius: 27,
     height: 75,
     position: 'absolute',
     bottom: 0,

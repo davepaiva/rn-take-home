@@ -20,7 +20,7 @@ const BottomTabNavigator = createBottomTabNavigator<HomeBottomTabBarParamList>()
 
 const HomeTabNavigator = () => {
   return (
-    <BottomTabNavigator.Navigator tabBar={BottomTabBar} screenOptions={{ headerShown: false, tabBarStyle: { backgroundColor: 'black' } }}>
+    <BottomTabNavigator.Navigator initialRouteName="Watch" tabBar={BottomTabBar} screenOptions={{ headerShown: false, tabBarStyle: { backgroundColor: 'black' } }}>
       <BottomTabNavigator.Screen name="Dashboard" component={DashboardScreen} />
       <BottomTabNavigator.Screen name="Watch" component={WatchScreen} />
       <BottomTabNavigator.Screen name="Media" component={MediaLibraryScreen} />
