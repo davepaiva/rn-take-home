@@ -35,7 +35,7 @@ const Screen: React.FC<ScreenProps> = ({
 
   const renderNavBarContent = () => (
     <>
-      {showBackButton && (
+      {showBackButton ? (
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}
@@ -46,6 +46,8 @@ const Screen: React.FC<ScreenProps> = ({
             color={transparentNavbar ? '#FFFFFF' : '#000000'}
           />
         </TouchableOpacity>
+      ) : (
+        <View style={styles.backButton} />
       )}
 
       <View
@@ -68,7 +70,6 @@ const Screen: React.FC<ScreenProps> = ({
           <Text
             size="small"
             weight="Medium"
-
             style={[
               {color: transparentNavbar ? '#FFFFFF99' : palette.primary},
               styles.subtitle,
@@ -79,7 +80,7 @@ const Screen: React.FC<ScreenProps> = ({
         )}
       </View>
 
-      {rightIcon && (
+      {rightIcon ? (
         <TouchableOpacity
           onPress={rightIcon.onPress}
           style={styles.rightButton}
@@ -90,6 +91,8 @@ const Screen: React.FC<ScreenProps> = ({
             color={transparentNavbar ? '#FFFFFF' : '#000000'}
           />
         </TouchableOpacity>
+      ) : (
+        <View style={styles.rightButton} />
       )}
     </>
   );
