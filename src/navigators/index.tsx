@@ -3,6 +3,7 @@ import {createNativeStackNavigator, NativeStackScreenProps} from '@react-navigat
 import HomeTabNavigator from '@navigators/HomeBottomTabBar';
 import MovieDetailsScreen from '@screens/MovieDetailsScreen';
 import BookSeatsScreen from '@screens/BookSeats';
+import SelectCinema from '@screens/SelectCinema';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -11,7 +12,16 @@ export type RootStackParamList = {
     posterUrl: string,
     description: string,
   };
-  BookSeats: undefined;
+  SelectCinema: {
+    title: string,
+  };
+  BookSeats: {
+    hall: string;
+    time: string;
+    date: string;
+    price: number;
+    movieTitle: string;
+  };
 };
 
 
@@ -19,7 +29,7 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export type MovieDetailsProps = NativeStackScreenProps<RootStackParamList,'MovieDetails'>;
 export type BookSeatsProps = NativeStackScreenProps<RootStackParamList,'BookSeats'>;
-
+export type SelectCinemaProps = NativeStackScreenProps<RootStackParamList,'SelectCinema'>;
 const RootStackNavigator = () => {
   return (
     <>
@@ -28,6 +38,7 @@ const RootStackNavigator = () => {
         <RootStack.Screen name={'Home'} component={HomeTabNavigator} options={{ headerShown: false }} />
         <RootStack.Screen name={'MovieDetails'} component={MovieDetailsScreen} options={{ headerShown: false }} />
         <RootStack.Screen name={'BookSeats'} component={BookSeatsScreen} options={{ headerShown: false }} />
+        <RootStack.Screen name={'SelectCinema'} component={SelectCinema} options={{ headerShown: false }} />
       </RootStack.Navigator>
     </>
   );

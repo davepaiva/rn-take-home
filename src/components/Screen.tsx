@@ -183,6 +183,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+    backgroundColor: palette.surface_primary,
   },
   subtitle: {
     marginTop: 6,

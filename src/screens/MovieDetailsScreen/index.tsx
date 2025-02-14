@@ -37,7 +37,7 @@ const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleBookSeats = () => {
-    navigation.navigate('BookSeats');
+    navigation.navigate('SelectCinema', { title: route.params.title });
   };
 
   return (

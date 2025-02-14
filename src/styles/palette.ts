@@ -1,5 +1,5 @@
 const palette = {
-    text_primary: '##202c43',
+    text_primary: '#202c43',
     text_secondary: '#8F8F8F',
     text_tertiary: '#DBDBDF',
     text_light: '#FFFFFF',

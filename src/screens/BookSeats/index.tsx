@@ -5,9 +5,10 @@ import Text from '@components/Text';
 import { useState } from 'react';
 import palette from '@styles/palette';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Button from '@components/Button';
 import SeatTag from './components/SeatTag';
+import { BookSeatsProps } from '@navigators/index';
 
 
 const screenImage = require('../../../assets/images/theatre_screen.png');
@@ -38,17 +39,21 @@ const ROWS = 10;
 const SEATS_PER_ROW = 14;
 const BOOKED_SEATS = ['0-1', '0-2', '1-4', '2-3', '3-7', '4-5', '5-2', '6-8', '7-1', '8-4', '9-6'];
 
-const BookSeatsScreen = () => {
+const BookSeatsScreen = ({ route }: BookSeatsProps) => {
   const [selectedSeats, setSelectedSeats] = useState<SelectedSeat[]>([]);
+
+  const { hall, time, date, movieTitle } = route.params;
 
   const zoomableViewRef = useRef<ReactNativeZoomableView>(null);
   const scrollViewRef = useRef(null);
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
-  const execAfterZoom = () =>
-    scrollViewRef &&
-    zoomableViewRef &&
-    setScrollEnabled(zoomableViewRef.current?.zoomLevel < 1.01);
+  const execAfterZoom = async () => {
+    if (scrollViewRef && zoomableViewRef?.current) {
+      const currentZoom = await zoomableViewRef.current.getZoomLevel();
+      setScrollEnabled(currentZoom < 1.01);
+    }
+  };
 
   const handleSeatPress = (seatId: string, row: number, seatNumber: number) => {
     setSelectedSeats(prev => {
@@ -106,7 +111,7 @@ const BookSeatsScreen = () => {
   };
 
   return (
-    <Screen horizontalPadding={0} showNavbar title="Book Seats" showBackButton subtitle="March 5, 2021 | 12:30 hall 1">
+    <Screen horizontalPadding={0} showNavbar title={movieTitle} showBackButton subtitle={`${date} | ${time} ${hall}`}>
       <View style={styles.container}>
         <View style={styles.seatsContainer}>
           <ScrollView horizontal scrollEnabled={scrollEnabled} ref={scrollViewRef}>
@@ -134,10 +139,10 @@ const BookSeatsScreen = () => {
           </ScrollView>
           <View style={styles.zoomControls}>
             <Pressable style={styles.zoomButton} onPress={handleZoomIn}>
-              <Icon name='plus' size={10.73} color='#000000' />
+              <MaterialCommunityIcons name='plus' size={10.73} color='#000000' />
             </Pressable>
             <Pressable style={styles.zoomButton} onPress={handleZoomOut}>
-              <Icon name='minus' size={10.73} color='#000000' />
+              <MaterialCommunityIcons name='minus' size={10.73} color='#000000' />
             </Pressable>
           </View>
         </View>
@@ -188,7 +193,11 @@ const BookSeatsScreen = () => {
               <Text variant="primary" weight="SemiBold" size="large">${calculateTotalPrice()}</Text>
             </View>
             <View style={styles.ctaButtonContainer}>
-              <Button title="Proceed to pay" onPress={() => {}} />
+              <Button 
+                title="Proceed to pay" 
+                onPress={() => {}} 
+                disabled={selectedSeats.length === 0}
+              />
             </View>
           </View>
         </View>
@@ -211,6 +220,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 16,
     minHeight: 252,
+    backgroundColor: '#FFFFFF',
   },
   screenContainer: {
     alignItems: 'center',

@@ -10,6 +10,7 @@ interface ButtonProps extends PressableProps {
   leftIcon?: string;
   rightIcon?: string;
   iconSpacing?: number;
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -19,6 +20,7 @@ const Button: React.FC<ButtonProps> = ({
   leftIcon,
   rightIcon,
   iconSpacing = 8,
+  disabled = false,
   ...props
 }) => {
   return (
@@ -27,16 +29,27 @@ const Button: React.FC<ButtonProps> = ({
         styles.button,
         styles[variant],
         pressed && styles.pressed,
+        disabled && styles.disabled,
         style,
       ] as StyleProp<ViewStyle>)}
+      disabled={disabled}
       {...props}
     >
       <View style={styles.contentContainer}>
-        {leftIcon && <View style={{ marginRight: iconSpacing }}><Icon name={leftIcon} size={20} color="#FFFFFF" /></View>}
+        {leftIcon && (
+          <View style={{ marginRight: iconSpacing }}>
+            <Icon 
+              name={leftIcon}
+              size={20}
+              color={disabled ? palette.disabled : '#FFFFFF'}
+            />
+          </View>
+        )}
         <Text
           style={[
             styles.text,
             variant === 'secondary' && styles.secondaryText,
+            disabled && styles.disabledText,
           ]}
           size="x_large"
           variant="light"
@@ -44,7 +57,15 @@ const Button: React.FC<ButtonProps> = ({
         >
           {title}
         </Text>
-        {rightIcon && <View style={{ marginLeft: iconSpacing }}><Icon name={rightIcon} size={20} color="#FFFFFF" /></View>}
+        {rightIcon && (
+          <View style={{ marginLeft: iconSpacing }}>
+            <Icon 
+              name={rightIcon}
+              size={20}
+              color={disabled ? palette.disabled : '#FFFFFF'}
+            />
+          </View>
+        )}
       </View>
     </Pressable>
   );
@@ -81,6 +102,13 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.8,
+  },
+  disabled: {
+    backgroundColor: 'rgba(166, 166, 166, 0.1)',
+    borderColor: palette.disabled,
+  },
+  disabledText: {
+    color: palette.disabled,
   },
 });
 
