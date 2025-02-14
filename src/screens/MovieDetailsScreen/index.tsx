@@ -82,7 +82,7 @@ const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: palette.surface_primary,
+    backgroundColor: '#FFFFFF',
   },
   headerContainer: {
     alignItems: 'center',
@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
     marginBottom: 34,
   },
   contentContainer: {
+    flex: 1,
     paddingHorizontal: 40,
     backgroundColor: '#FFFFFF',
   },
