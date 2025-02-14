@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingHorizontal: 40,
+    backgroundColor: '#FFFFFF',
   },
   genresSection: {
     marginTop: 27,
