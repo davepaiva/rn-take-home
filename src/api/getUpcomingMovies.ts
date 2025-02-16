@@ -16,9 +16,9 @@ interface NowPlayingResponse {
   total_results: number;
 }
 
-const getNowPlayingMovies = async (page: number = 1): Promise<NowPlayingResponse> => {
+const getUpcomingMovies = async (page: number = 1): Promise<NowPlayingResponse> => {
   try {
-    const response = await api.get(APIEndpoints.NOW_PLAYING, {params: {language: 'en-US', page}});
+    const response = await api.get(APIEndpoints.UPCOMING, {params: {language: 'en-US', page}});
     const data: NowPlayingResponse = await response.data;
     return data;
   } catch (error) {
@@ -29,4 +29,4 @@ const getNowPlayingMovies = async (page: number = 1): Promise<NowPlayingResponse
 };
 
 
-export default getNowPlayingMovies;
+export default getUpcomingMovies;

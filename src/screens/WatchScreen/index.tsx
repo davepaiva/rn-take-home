@@ -1,31 +1,45 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { View, StyleSheet, FlatList, BackHandler} from 'react-native';
 import Text from '@components/Text';
-import getNowPlayingMovies from '@api/getNowPlayingMovies';
-import MovieListItem from './components/MovieListItem';
+import getUpcomingMovies from '@api/getUpcomingMovies';
+import MovieListItem from './components/UpcomingMovieListItem';
 import { Movie } from '@custom_types/api/tmdb';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@navigators/index';
 import Screen from '@components/Screen';
-
+import SearchView from './components/SearchView';
+import ActivityIndicator from '@components/ActivityIndicator';
 
 const WatchScreen = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isUpcomingLoading, setUpcomingLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isUpcomingLoadingMore, setUpcomingLoadingMore] = useState(false);
   const [hasMorePages, setHasMorePages] = useState(true);
+  const [isSearchMode, setIsSearchMode] = useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const isFocusedRef = useRef(useIsFocused());
+  const isFocused = useIsFocused();
+
+  const searchModeRef = useRef(false);
+
+  useEffect(() => {
+    searchModeRef.current = isSearchMode;
+  }, [isSearchMode]);
+
+  useEffect(() => {
+    isFocusedRef.current = isFocused;
+  }, [isFocused]);
+
 
 
   const fetchMovies = async (page: number, isLoadingMore = false) => {
     try {
       if (!isLoadingMore) {
-        setIsLoading(true);
+        setUpcomingLoading(true);
       }
-      const data = await getNowPlayingMovies(page);
-      console.log('data', data);
+      const data = await getUpcomingMovies(page);
       if (isLoadingMore) {
         setMovies(prevMovies => [...prevMovies, ...data.results]);
       } else {
@@ -35,26 +49,40 @@ const WatchScreen = () => {
     } catch (error) {
       console.error('Error fetching movies:', error);
     } finally {
-      setIsLoading(false);
-      setIsLoadingMore(false);
+      setUpcomingLoading(false);
+      setUpcomingLoadingMore(false);
     }
   };
 
   useEffect(() => {
     fetchMovies(1);
+    const backhandler = BackHandler.addEventListener('hardwareBackPress', ()=>{
+      if(searchModeRef.current && isFocusedRef.current){
+        setIsSearchMode(false);
+        return true;
+      }
+      return false;
+    });
+    return () => {
+      backhandler.remove();
+    }
   }, []);
 
+  const handleToggleSearchMode = () => {
+    setIsSearchMode(!isSearchMode);
+  }
+
   const handleLoadMore = useCallback(() => {
-    if (!isLoadingMore && hasMorePages && !isLoading) {
-      setIsLoadingMore(true);
+    if (!isUpcomingLoadingMore && hasMorePages && !isUpcomingLoading) {
+      setUpcomingLoadingMore(true);
       setCurrentPage(prev => prev + 1);
       fetchMovies(currentPage + 1, true);
     }
-  }, [isLoadingMore, hasMorePages, currentPage, isLoading]);
+  }, [isUpcomingLoadingMore, hasMorePages, currentPage, isUpcomingLoading]);
 
 
   const renderFooter = () => {
-    if (!isLoadingMore) return null;
+    if (!isUpcomingLoadingMore) return null;
     return (
       <View style={styles.footerLoader}>
         <ActivityIndicator size="small" color="#000" />
@@ -62,10 +90,9 @@ const WatchScreen = () => {
     );
   };
 
-  const renderItem = ({ item }: { item: Movie }) => {
+  const renderItem = ({ item, index }: { item: Movie, index: number }) => {
     const handleMoviePress = () => {
-        console.log('movie pressed:', item.title);
-        navigation.navigate('MovieDetails', { title: item.title, posterUrl: item.poster_path, description: item.overview });
+        navigation.navigate('MovieDetails', { title: item.title, posterUrl: item.poster_path, description: item.overview, genre_ids: item.genre_ids });
     };
 
     return (
@@ -74,31 +101,38 @@ const WatchScreen = () => {
       title={item.title}
       posterUrl={item.backdrop_path}
       onPress={handleMoviePress}
+      isFirstItem={index === 0}
     />
     );
   };
 
-  if (isLoading) {
+
+
+  if (isSearchMode) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#000" />
-      </View>
+      <SearchView />
     );
   }
-
   return (
-    <Screen showNavbar title="Watch" showBackButton={false} centerTitle={false}>
+    <Screen showNavbar title="Watch" showBackButton={false} centerTitle={false} rightIcon={{ name: 'search', onPress: handleToggleSearchMode }}>
       <View style={styles.container}>
-          <FlatList
-            data={movies}
-            renderItem={renderItem}
-            keyExtractor={item => item.id.toString()}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={renderFooter}
-            ListEmptyComponent={<Text>No movies available</Text>}
+        {
+          isUpcomingLoading ? (
+            <ActivityIndicator size="large" color="#000" />
+          ) : (
+            <FlatList
+              data={movies}
+              renderItem={renderItem}
+              keyExtractor={item => item.id.toString()}
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={renderFooter}
+              ListEmptyComponent={<Text>No movies available</Text>}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="always"
           />
-        </View>
+        )}
+      </View>
     </Screen>
   );
 };
@@ -107,9 +141,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    backgroundColor: 'white',
     justifyContent: 'center',
-    alignItems: 'center',
   },
   footerLoader: {
     paddingVertical: 20,

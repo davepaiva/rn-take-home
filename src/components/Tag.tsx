@@ -13,7 +13,7 @@ const Tag: React.FC<TagProps> = ({ label, color = palette.primary, style }) => {
   return (
     <View style={[styles.container, { backgroundColor: color }, style]}>
       <Text
-        variant="light"
+        variant={color === palette.surface_primary ? 'primary' : 'light'}
         size="small"
         weight="SemiBold"
         style={styles.text}

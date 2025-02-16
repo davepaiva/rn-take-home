@@ -12,14 +12,15 @@ interface MovieListItemProps {
   title: string;
   posterUrl: string;
   onPress: () => void;
+  isFirstItem: boolean;
 }
 
 const BORDER_RADIUS = 20;
 
-const MovieListItem: React.FC<MovieListItemProps> = ({ title, posterUrl, onPress }) => {
+const MovieListItem: React.FC<MovieListItemProps> = ({ title, posterUrl, onPress, isFirstItem }) => {
 
   return (
-    <Pressable onPress={onPress} style={styles.card}>
+    <Pressable onPress={onPress} style={[styles.card, isFirstItem && styles.firstItem]}>
       <ImageBackground
         source={{ uri: renderTMDBImage(posterUrl, 500) }}
         style={styles.imageBackground}
@@ -60,6 +61,9 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 16,
+  },
+  firstItem: {
+    marginTop: 30,
   },
 });
 

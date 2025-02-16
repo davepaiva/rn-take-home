@@ -11,6 +11,7 @@ export type RootStackParamList = {
     title: string,
     posterUrl: string,
     description: string,
+    genre_ids: number[],
   };
   SelectCinema: {
     title: string,

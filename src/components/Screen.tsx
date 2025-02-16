@@ -87,7 +87,7 @@ const Screen: React.FC<ScreenProps> = ({
         >
           <Icon
             name={rightIcon.name}
-            size={24}
+            size={18.9}
             color={transparentNavbar ? '#FFFFFF' : '#000000'}
           />
         </TouchableOpacity>

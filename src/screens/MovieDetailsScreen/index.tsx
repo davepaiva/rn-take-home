@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -16,6 +16,8 @@ import globalStyles from '@styles/globalStyles';
 import Screen from '@components/Screen';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import asyncStorageKeys from '@app_utils/asynStorageKeys';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Genre = {
   id: number;
@@ -25,27 +27,39 @@ type Genre = {
 
 
 
-const GENRES: Genre[] = [
-  { id: 1, name: 'Action', color: palette.tag_cyan },
-  { id: 2, name: 'Thriller', color: palette.tag_pink },
-  { id: 3, name: 'Science', color: palette.tag_purple },
-  { id: 4, name: 'Fiction', color: palette.tag_gold },
-];
+const GENRES: Record<string, string> = {
+  Action: palette.tag_cyan,
+  Thriller: palette.tag_pink,
+  Science: palette.tag_purple,
+  Fiction: palette.tag_gold,
+};
 
 const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
+  const [genres, setGenres] = useState<Genre[]>([]);
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  useEffect(() => {
+    const loadGenres = async () => {
+      const cachedGenres = await AsyncStorage.getItem(asyncStorageKeys.movieGenres);
+      const cachedGenresList = JSON.parse(cachedGenres || '[]');
+      setGenres(cachedGenresList);
+    };
+    loadGenres();
+  }, []);
 
   const handleBookSeats = () => {
     navigation.navigate('SelectCinema', { title: route.params.title });
   };
+
+  console.log('genre_ids', route.params.genre_ids);
 
   return (
     <Screen horizontalPadding={0} showNavbar title="Watch" transparentNavbar centerTitle={false}>
       <ScrollView style={styles.container}>
         <View style={styles.headerContainer}>
           <ImageBackground
-          source={{ uri: renderTMDBImage(route.params.posterUrl, 500) }}
+          source={{ uri: renderTMDBImage(route.params.posterUrl, 500) || '' }}
           style={styles.posterImage}
           resizeMode="cover"
         >
@@ -64,9 +78,12 @@ const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
         <View style={styles.contentContainer}>
           <Text style={styles.genresSection} variant="primary">Genres</Text>
           <View style={styles.genresContainer}>
-            {GENRES.map((genre) => (
-                <Tag key={genre.id} label={genre.name} color={genre.color} />
-            ))}
+            {route.params.genre_ids.map((genreId) => {
+              const genre = genres.find((g) => g.id === genreId);
+              return (
+                <Tag key={genreId} label={genre?.name || 'Unknown'} color={GENRES[genre?.name || 'Unknown'] || palette.surface_primary} />
+              );
+            })}
           </View>
           <View style={[styles.divider, globalStyles.divider]} />
           <Text variant="primary">Overview</Text>
@@ -156,6 +173,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 5,
     flexWrap: 'wrap',
+    marginTop: 14,
   },
   genreTag: {
     paddingVertical: 6,

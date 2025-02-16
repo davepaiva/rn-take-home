@@ -19,7 +19,9 @@ export enum APIEndpoints {
   MOVIE_DETAILS = '/movie',
   SEARCH = '/search/movie',
   TRENDING = '/trending/movie/week',
-  GENRES = '/genre/movie/list'
+  MOVIE_GENRES = '/genre/movie/list',
+  TV_GENRES = '/genre/tv/list',
+  SEARCH_MULTI = '/search/multi',
 }
 
 
