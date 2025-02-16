@@ -23,7 +23,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   const handleTurnOnSearchResultMode = () => {
-    toggleResultMode(true);
+    if(searchQuery.length > 0){
+      toggleResultMode(true);
+    }
   };
 
 

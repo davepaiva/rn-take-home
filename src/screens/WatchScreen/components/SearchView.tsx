@@ -14,7 +14,12 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '@navigators/index';
 
-const SearchView = () => {
+interface SearchViewProps {
+    isSearchMode: boolean;
+    turnOffSearchMode: () => void;
+}
+
+const SearchView: React.FC<SearchViewProps> = ({isSearchMode, turnOffSearchMode }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isQueryLoading, setIsQueryLoading] = useState(false);
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -24,6 +29,7 @@ const SearchView = () => {
     const [hasMorePages, setHasMorePages] = useState(true);
     const [totalResults, setTotalResults] = useState(0);
     const isResultModeRef = useRef(false);
+    const isSearchModeRef = useRef(false);
     const isFocusedRef = useRef(useIsFocused());
 
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -35,12 +41,20 @@ const SearchView = () => {
                 setIsResultMode(false);
                 return true;
             }
+            if(isSearchModeRef.current && isFocusedRef.current){
+                turnOffSearchMode();
+                return true;
+            }
             return false;
         });
         return () => {
             backhandler.remove();
         }
     }, []);
+
+    useEffect(()=>{
+        isSearchModeRef.current = isSearchMode;
+    }, [isSearchMode]);
 
     useEffect(()=>{
         isResultModeRef.current = isResultMode;
@@ -108,6 +122,10 @@ const SearchView = () => {
     };
 
     const handleOnSearchResultMode = (isResultMode: boolean) => {
+        if(!isResultMode){
+            setSearchResults([]);
+            setTotalResults(0);
+        }
         setIsResultMode(isResultMode);
     };
 

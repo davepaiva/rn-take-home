@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, View, Image, Pressable } from 'react-native';
-import { SearchResult } from '@custom_types/api/tmdb';
+import { GenreList, SearchResult } from '@custom_types/api/tmdb';
 import Text from '@components/Text';
 import { renderTMDBImage } from '@app_utils/helperfuncs';
 import palette from '@styles/palette';
 import ActivityIndicator from '@components/ActivityIndicator';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import asyncStorageKeys from '@app_utils/asynStorageKeys';
 
 interface SearchResultListProps {
   data: SearchResult[];
@@ -16,6 +18,15 @@ interface SearchResultListProps {
 }
 
 const SearchResultList: React.FC<SearchResultListProps> = ({ data, onItemPress, isResultMode, onLoadMore, isLoadingMore = false }) => {
+  const [genres, setGenres] = useState<GenreList[]>([]);
+
+  useEffect(() => {
+    const fetchGenres = async () => {
+      const cachedGenres = await AsyncStorage.getItem(asyncStorageKeys.movieGenres);
+      setGenres(JSON.parse(cachedGenres || '[]'));
+    };
+    fetchGenres();
+  }, []);
 
   const renderItem = ({ item, index }: { item: SearchResult, index: number }) => {
     const title = item.title || item.name || '';
@@ -24,7 +35,7 @@ const SearchResultList: React.FC<SearchResultListProps> = ({ data, onItemPress, 
 
     return (
       <Pressable
-        style={[styles.itemContainer, index === 0 && styles.firstItemContainer]}
+        style={[styles.itemContainer, index === 0 && styles.firstItemContainer, index === data.length - 1 && styles.lastItemContainer]}
         onPress={() => onItemPress?.(item)}
       >
         {
@@ -48,6 +59,7 @@ const SearchResultList: React.FC<SearchResultListProps> = ({ data, onItemPress, 
           >
             {title}
           </Text>
+          <Text variant='secondary' size="small" weight="Medium">{genres.find(genre => genre.id === item.genre_ids[0])?.name}</Text>
         </View>
         <View style={styles.dotsContainer}>
           <Icon name="dots-horizontal" size={24} color={palette.primary} />
@@ -94,6 +106,7 @@ const SearchResultList: React.FC<SearchResultListProps> = ({ data, onItemPress, 
       onEndReached={isResultMode ? onLoadMore : undefined}
       onEndReachedThreshold={0.5}
       keyboardShouldPersistTaps="always"
+      style={styles.flatList}
     />
   );
 };
@@ -134,6 +147,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 21,
     justifyContent: 'center',
+    gap: 8,
   },
   text: {
     // flex: 1,
@@ -150,6 +164,12 @@ const styles = StyleSheet.create({
     height: 24,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  flatList: {
+    marginBottom: 75,
+  },
+  lastItemContainer: {
+    marginBottom: 20,
   },
 });
 

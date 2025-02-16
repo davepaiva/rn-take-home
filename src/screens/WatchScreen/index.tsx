@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { View, StyleSheet, FlatList, BackHandler} from 'react-native';
+import { View, StyleSheet, FlatList} from 'react-native';
 import Text from '@components/Text';
 import getUpcomingMovies from '@api/getUpcomingMovies';
 import MovieListItem from './components/UpcomingMovieListItem';
@@ -56,16 +56,6 @@ const WatchScreen = () => {
 
   useEffect(() => {
     fetchMovies(1);
-    const backhandler = BackHandler.addEventListener('hardwareBackPress', ()=>{
-      if(searchModeRef.current && isFocusedRef.current){
-        setIsSearchMode(false);
-        return true;
-      }
-      return false;
-    });
-    return () => {
-      backhandler.remove();
-    }
   }, []);
 
   const handleToggleSearchMode = () => {
@@ -110,7 +100,7 @@ const WatchScreen = () => {
 
   if (isSearchMode) {
     return (
-      <SearchView />
+      <SearchView turnOffSearchMode={handleToggleSearchMode} isSearchMode={isSearchMode} />
     );
   }
   return (
