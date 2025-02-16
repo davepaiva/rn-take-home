@@ -128,6 +128,7 @@ const WatchScreen = () => {
               ListEmptyComponent={<Text>No movies available</Text>}
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="always"
+              // contentContainerStyle={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
           />
         )}
       </View>
@@ -140,6 +141,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   footerLoader: {
     paddingVertical: 20,

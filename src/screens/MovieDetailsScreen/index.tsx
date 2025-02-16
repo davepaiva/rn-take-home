@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
   ScrollView,
   ImageBackground,
+  Dimensions,
 } from 'react-native';
 import { renderTMDBImage } from '@app_utils/helperfuncs';
 import {RootStackParamList, MovieDetailsProps } from '@navigators/index';
@@ -38,6 +39,9 @@ const GENRES: Record<string, string> = {
 const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
+  const [isLandscape, setIsLandscape] = useState(
+    Dimensions.get('window').width > Dimensions.get('window').height
+  );
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -60,6 +64,19 @@ const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
     }
   }, [route.params.id, route.params.video]);
 
+  useEffect(() => {
+    const updateOrientation = () => {
+      const dimension = Dimensions.get('window');
+      setIsLandscape(dimension.width > dimension.height);
+    };
+
+    const subscription = Dimensions.addEventListener('change', updateOrientation);
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   const handleBookSeats = () => {
     navigation.navigate('SelectCinema', { title: route.params.title });
   };
@@ -71,26 +88,29 @@ const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
 
   return (
     <Screen horizontalPadding={0} showNavbar title="Watch" transparentNavbar centerTitle={false}>
-      <ScrollView style={styles.container}>
-        <View style={styles.headerContainer}>
+      <View style={[styles.container, isLandscape && styles.landscapeContainer]}>
+        <View style={[styles.headerContainer, isLandscape && styles.landscapeHeaderContainer]}>
           <ImageBackground
-          source={{ uri: renderTMDBImage(route.params.posterUrl, 500) || '' }}
-          style={styles.posterImage}
-          resizeMode="cover"
-        >
-          <LinearGradient
-            colors={['transparent', '#000000']}
-            style={styles.gradient}
+            source={{ uri: renderTMDBImage(route.params.posterUrl, 500) || '' }}
+            style={[styles.posterImage, isLandscape && styles.landscapePosterImage]}
+            resizeMode="cover"
           >
-            <View style={styles.heroContentContainer}>
-            <Button variant="primary" title="Get Tickets" onPress={handleBookSeats} />
-            <Button variant="secondary" title="Watch Trailer" onPress={handleWatchTrailer} leftIcon={'play'} disabled={!trailerKey} />
-            </View>
-          </LinearGradient>
-        </ImageBackground>
+            <LinearGradient
+              colors={['transparent', '#000000']}
+              style={styles.gradient}
+            >
+              <View style={styles.heroContentContainer}>
+                <Button variant="primary" title="Get Tickets" onPress={handleBookSeats} />
+                <Button variant="secondary" title="Watch Trailer" onPress={handleWatchTrailer} leftIcon={'play'} disabled={!trailerKey} />
+              </View>
+            </LinearGradient>
+          </ImageBackground>
         </View>
 
-        <View style={styles.contentContainer}>
+        <ScrollView
+          style={[styles.contentContainer, isLandscape && styles.landscapeContentContainer]}
+          contentContainerStyle={isLandscape && styles.landscapeContentScrollContainer}
+        >
           <Text style={styles.genresSection} variant="primary">Genres</Text>
           <View style={styles.genresContainer}>
             {route.params.genre_ids.map((genreId) => {
@@ -102,11 +122,13 @@ const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
           </View>
           <View style={[styles.divider, globalStyles.divider]} />
           <Text variant="primary">Overview</Text>
-          <Text style={styles.descriptionSection} variant='secondary'>
+          <View style={styles.descriptionContainer}>
+            <Text variant='secondary'>
               {route.params.description}
-          </Text>
-        </View>
-      </ScrollView>
+            </Text>
+          </View>
+        </ScrollView>
+      </View>
     </Screen>
   );
 };
@@ -204,8 +226,28 @@ const styles = StyleSheet.create({
     marginTop: 22,
     marginBottom: 15,
   },
-  descriptionSection: {
+  descriptionContainer: {
     marginTop: 14,
+    paddingBottom: 20,
+  },
+  landscapeContainer: {
+    flexDirection: 'row',
+    height: '100%',
+  },
+  landscapeHeaderContainer: {
+    width: '50%',
+    height: '100%',
+  },
+  landscapePosterImage: {
+    height: '100%',
+  },
+  landscapeContentContainer: {
+    width: '50%',
+    height: '100%',
+    paddingTop: 20,
+  },
+  landscapeContentScrollContainer: {
+    paddingBottom: 40,
   },
 });
 

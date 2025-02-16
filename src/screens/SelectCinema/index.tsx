@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Pressable, Image, FlatList } from 'react-native';
+import { View, StyleSheet, ScrollView, Pressable, Image, FlatList, useWindowDimensions } from 'react-native';
 import Text from '@components/Text';
 import Screen from '@components/Screen';
 import { SelectCinemaProps } from '@navigators/index';
@@ -32,6 +32,8 @@ const SHOWTIMES: Showtime[] = [
 ];
 
 const SelectCinema: React.FC<SelectCinemaProps> = ({ route }) => {
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedCinema, setSelectedCinema] = useState<string | null>(null);
@@ -88,13 +90,19 @@ const SelectCinema: React.FC<SelectCinemaProps> = ({ route }) => {
 
   return (
     <Screen showNavbar title={title} subtitle="In Theaters Dec 22 2021">
-      <View style={globalStyles.f1}>
-        <View style={styles.container}>
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContent}
+      >
+        <View style={[
+          styles.container,
+          isLandscape && styles.containerLandscape,
+        ]}>
           <View style={styles.dateSection}>
-            <Text style={styles.dateTitle} variant="primary" weight="Medium" size="large">
+          <Text style={styles.dateTitle} variant="primary" weight="Medium" size="large">
               Date
             </Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <View style={styles.datesContainer}>
                 {DATES.map((date, index) => (
                   <Pressable
@@ -128,18 +136,27 @@ const SelectCinema: React.FC<SelectCinemaProps> = ({ route }) => {
             />
           </View>
         </View>
-        <View style={styles.buttonContainer}>
+      </ScrollView>
+      <View style={styles.buttonContainer}>
           <Button title="Select Seats" disabled={!isSelectionComplete} onPress={handleShowtimePress} />
         </View>
-      </View>
     </Screen>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
   container: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+  },
+  containerLandscape: {
+    marginTop: 20,
+    paddingBottom: 20,
+    flex: undefined, // Remove flex property in landscape
   },
   dateSection: {
     marginBottom: 24,

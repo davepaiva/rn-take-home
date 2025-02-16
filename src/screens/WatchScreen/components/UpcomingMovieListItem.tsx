@@ -44,6 +44,7 @@ const MovieListItem: React.FC<MovieListItemProps> = ({ title, posterUrl, onPress
 
 const styles = StyleSheet.create({
   card: {
+    maxWidth:335,
     width: '100%',
     marginBottom: 20,
   },
