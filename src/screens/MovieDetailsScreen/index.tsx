@@ -4,7 +4,6 @@ import {
   StyleSheet,
   ScrollView,
   ImageBackground,
-  Dimensions,
 } from 'react-native';
 import { renderTMDBImage } from '@app_utils/helperfuncs';
 import {RootStackParamList, MovieDetailsProps } from '@navigators/index';
@@ -20,6 +19,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import asyncStorageKeys from '@app_utils/asynStorageKeys';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import getMovieTrailer from '@api/GetMovieTrailer';
+import { useOrientation } from '@hooks/useOrientation';
 
 type Genre = {
   id: number;
@@ -39,9 +39,7 @@ const GENRES: Record<string, string> = {
 const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
-  const [isLandscape, setIsLandscape] = useState(
-    Dimensions.get('window').width > Dimensions.get('window').height
-  );
+  const isLandscape = useOrientation();
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -63,19 +61,6 @@ const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
       getTrailer(route.params.id);
     }
   }, [route.params.id, route.params.video]);
-
-  useEffect(() => {
-    const updateOrientation = () => {
-      const dimension = Dimensions.get('window');
-      setIsLandscape(dimension.width > dimension.height);
-    };
-
-    const subscription = Dimensions.addEventListener('change', updateOrientation);
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
 
   const handleBookSeats = () => {
     navigation.navigate('SelectCinema', { title: route.params.title });

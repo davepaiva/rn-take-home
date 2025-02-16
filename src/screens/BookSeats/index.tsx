@@ -1,14 +1,14 @@
-import React, { useRef} from 'react';
+import React, { useRef, useState } from 'react';
 import { View, StyleSheet, Pressable, Image, ScrollView } from 'react-native';
 import Screen from '@components/Screen';
 import Text from '@components/Text';
-import { useState } from 'react';
 import palette from '@styles/palette';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Button from '@components/Button';
 import SeatTag from './components/SeatTag';
 import { BookSeatsProps } from '@navigators/index';
+import { useOrientation } from '@hooks/useOrientation';
 
 
 const screenImage = require('../../../assets/images/theatre_screen.png');
@@ -47,6 +47,8 @@ const BookSeatsScreen = ({ route }: BookSeatsProps) => {
   const zoomableViewRef = useRef<ReactNativeZoomableView>(null);
   const scrollViewRef = useRef(null);
   const [scrollEnabled, setScrollEnabled] = useState(true);
+
+  const isLandscape = useOrientation();
 
   const execAfterZoom = async () => {
     if (scrollViewRef && zoomableViewRef?.current) {
@@ -112,8 +114,8 @@ const BookSeatsScreen = ({ route }: BookSeatsProps) => {
 
   return (
     <Screen horizontalPadding={0} showNavbar title={movieTitle} showBackButton subtitle={`${date} | ${time} ${hall}`}>
-      <View style={styles.container}>
-        <View style={styles.seatsContainer}>
+      <View style={[styles.container, isLandscape && styles.landscapeContainer]}>
+        <View style={[styles.seatsContainer, isLandscape && styles.landscapeSeatsContainer]}>
           <ScrollView horizontal scrollEnabled={scrollEnabled} ref={scrollViewRef}>
             <ReactNativeZoomableView
               maxZoom={1.5}
@@ -139,15 +141,15 @@ const BookSeatsScreen = ({ route }: BookSeatsProps) => {
           </ScrollView>
           <View style={styles.zoomControls}>
             <Pressable style={styles.zoomButton} onPress={handleZoomIn}>
-              <MaterialCommunityIcons name='plus' size={10.73} color='#000000' />
+              <Icon name='plus' size={10.73} color='#000000' />
             </Pressable>
             <Pressable style={styles.zoomButton} onPress={handleZoomOut}>
-              <MaterialCommunityIcons name='minus' size={10.73} color='#000000' />
+              <Icon name='minus' size={10.73} color='#000000' />
             </Pressable>
           </View>
         </View>
 
-        <View style={styles.bottomContainer}>
+        <View style={[styles.bottomContainer, isLandscape && styles.landscapeBottomContainer]}>
           <View style={styles.legend}>
             <View style={styles.legendRow}>
               <View style={styles.legendItem}>
@@ -327,6 +329,20 @@ const styles = StyleSheet.create({
   },
   ctaButtonContainer: {
     flex: 5,
+  },
+  landscapeContainer: {
+    flexDirection: 'row',
+    height: '100%',
+  },
+  landscapeSeatsContainer: {
+    width: '60%',
+    height: '100%',
+  },
+  landscapeBottomContainer: {
+    width: '40%',
+    height: '100%',
+    paddingTop: 20,
+    minHeight: 'auto',
   },
 });
 

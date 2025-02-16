@@ -17,6 +17,7 @@ const config = {
       '@app_utils': `${__dirname}/src/utils`,
       '@styles': `${__dirname}/src/styles`,
       '@api': `${__dirname}/src/api`,
+      '@hooks': `${__dirname}/src/hooks`,
     },
   },
   watchFolders: [__dirname],

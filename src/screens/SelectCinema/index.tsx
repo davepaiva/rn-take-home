@@ -7,7 +7,6 @@ import palette from '@styles/palette';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@navigators/index';
-import globalStyles from '@styles/globalStyles';
 import Button from '@components/Button';
 
 const DATES = [
