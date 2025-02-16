@@ -140,8 +140,10 @@ const SearchView: React.FC<SearchViewProps> = ({isSearchMode, turnOffSearchMode 
             posterUrl: item.poster_path || '',
             description: item.overview,
             genre_ids: item.genre_ids,
+            video: item.video || false,
+            id: item.id,
         });
-    }
+    };
 
     const renderContent = ()=>{
         switch(true){

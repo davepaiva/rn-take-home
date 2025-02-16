@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -18,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import asyncStorageKeys from '@app_utils/asynStorageKeys';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import getMovieTrailer from '@api/GetMovieTrailer';
 
 type Genre = {
   id: number;
@@ -36,6 +37,7 @@ const GENRES: Record<string, string> = {
 
 const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
   const [genres, setGenres] = useState<Genre[]>([]);
+  const [trailerKey, setTrailerKey] = useState<string | null>(null);
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -48,11 +50,24 @@ const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
     loadGenres();
   }, []);
 
+  useEffect(()=>{
+    const getTrailer = async (id: number) => {
+      const trailer = await getMovieTrailer(id);
+      setTrailerKey(trailer.key);
+    };
+    if(route.params.id){
+      getTrailer(route.params.id);
+    }
+  }, [route.params.id, route.params.video]);
+
   const handleBookSeats = () => {
     navigation.navigate('SelectCinema', { title: route.params.title });
   };
 
-  console.log('genre_ids', route.params.genre_ids);
+  const handleWatchTrailer = () => {
+    navigation.navigate('Trailer', { videoKey: trailerKey || '' });
+  };
+
 
   return (
     <Screen horizontalPadding={0} showNavbar title="Watch" transparentNavbar centerTitle={false}>
@@ -69,7 +84,7 @@ const MovieDetailsScreen: React.FC<MovieDetailsProps> = ({ route }) => {
           >
             <View style={styles.heroContentContainer}>
             <Button variant="primary" title="Get Tickets" onPress={handleBookSeats} />
-            <Button variant="secondary" title="Watch Trailer" onPress={() => {}} leftIcon={'play'} />
+            <Button variant="secondary" title="Watch Trailer" onPress={handleWatchTrailer} leftIcon={'play'} disabled={!trailerKey} />
             </View>
           </LinearGradient>
         </ImageBackground>

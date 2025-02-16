@@ -9,7 +9,7 @@ interface GenreListResponse{
 const getMovieGenreList = async (): Promise<GenreListResponse> => {
   try {
     const response = await api.get(APIEndpoints.MOVIE_GENRES, {
-      params: { language: 'en-US' }
+      params: { language: 'en-US' },
     });
     const data: GenreListResponse = await response.data;
     return data;

@@ -82,7 +82,15 @@ const WatchScreen = () => {
 
   const renderItem = ({ item, index }: { item: Movie, index: number }) => {
     const handleMoviePress = () => {
-        navigation.navigate('MovieDetails', { title: item.title, posterUrl: item.poster_path, description: item.overview, genre_ids: item.genre_ids });
+        navigation.navigate('MovieDetails',
+          {
+            title: item.title,
+            posterUrl: item.poster_path,
+            description: item.overview,
+            genre_ids: item.genre_ids,
+            video: item.video,
+            id: item.id,
+          });
     };
 
     return (

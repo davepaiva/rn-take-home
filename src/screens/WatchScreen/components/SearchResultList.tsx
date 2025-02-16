@@ -32,11 +32,15 @@ const SearchResultList: React.FC<SearchResultListProps> = ({ data, onItemPress, 
     const title = item.title || item.name || '';
     const imageUrl = renderTMDBImage(item.backdrop_path || '', 500);
 
+    const handleItemPress = () => {
+      onItemPress?.(item);
+    };
+
 
     return (
       <Pressable
         style={[styles.itemContainer, index === 0 && styles.firstItemContainer, index === data.length - 1 && styles.lastItemContainer]}
-        onPress={() => onItemPress?.(item)}
+        onPress={handleItemPress}
       >
         {
             imageUrl ? (

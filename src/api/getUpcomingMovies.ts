@@ -22,7 +22,7 @@ const getUpcomingMovies = async (page: number = 1): Promise<NowPlayingResponse> 
     const data: NowPlayingResponse = await response.data;
     return data;
   } catch (error) {
-    console.error('Error fetching now playing movies:', error);
+    console.error('Error fetching upcoming movies:', error);
     showToast('Error in getting movie list');
     throw error;
   }
